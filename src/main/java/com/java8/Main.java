@@ -16,6 +16,7 @@ public class Main {
         //todo add example to work with flatMap
         testStreamsTransformations(words);
         testWorkWithOptional(words);
+        testReduce();
     }
 
     private static void testSortingsByLabmda(String[] words) {
@@ -103,6 +104,16 @@ public class Main {
 
     private static String getMaximum() {
         return "123";
+    }
+
+    private static void testReduce() {
+        Stream<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5).stream();
+        Optional<Integer> sumOptional = numbers.reduce((x, y) -> x + y);
+        sumOptional.ifPresent(w -> printMessage("\nSum using reduce is: " + w));
+
+        numbers = Stream.empty();
+        Integer sum = numbers.reduce(0, (x, y) -> x + y);
+        printMessage("\nSum using reduce with identity is: " + sum);
     }
 
     private static Stream<String> getStream(String[] words) {
