@@ -1,7 +1,10 @@
 package main.java.com.java8;
 
 
+import com.sun.deploy.util.StringUtils;
+
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -143,6 +146,48 @@ public class Main {
 
         printMessage("\n\nExecuting function on each element from stream (executed not in parallel)");
         getStream(words).forEachOrdered(w -> System.out.print(" " + w + " "));
+
+        List<Student> students = Arrays.asList(new Student(1, "John"), new Student(2, "Bob"), new Student(3, "Arni"));
+        printMessage("\n\nCollected students(id per name) to map:");
+        Map<Long, String> studentsIdToName = students.stream()
+                .filter(s -> s.getId() > 1)
+                .collect(Collectors.toMap(Student::getId, Student::getName));
+        printMessage(studentsIdToName.toString());
+
+        printMessage("\nCollected students(id per Student) to map:");
+        //this throws exception on duplicate key
+        Map<Long, Student> studentsIdToEntity = students.stream().collect(Collectors.toMap(s -> s.getId(), Function.identity()));
+        printMessage(studentsIdToEntity.toString());
+
+        printMessage("\nCollected locales(country per set of languages) to map:");
+        //on duplicate key values are collected to set for this key
+        Stream<Locale> locales = Stream.of(Locale.getAvailableLocales());
+        Map<String, Set<String>> countryToLanguage = locales.filter(l -> l.getDisplayCountry().length() > 0).collect(
+                Collectors.toMap(
+                        l -> l.getDisplayCountry(),
+                        l -> Collections.singleton(l.getDisplayLanguage(l)),
+                        (existingValues, newValues) -> {
+                            Set res = new HashSet<>(existingValues);
+                            res.addAll(newValues);
+                            return res;
+                        })
+        );
+        printMessage(countryToLanguage.toString());
+
+
+        printMessage("\nCollected locales(country per set of languages) to TreeMap:");
+        locales = Stream.of(Locale.getAvailableLocales());
+        Map<String, Set<String>> countryToLocale = locales.filter(l -> l.getDisplayCountry().length() > 0).collect(
+                Collectors.<Locale, String, Set<String>, TreeMap<String, Set<String>>>toMap(
+                        l -> l.getDisplayCountry(),
+                        l -> Collections.singleton(l.getDisplayLanguage(l)),
+                        (existingValues, newValues) -> {
+                            Set res = new HashSet<>(existingValues);
+                            res.addAll(newValues);
+                            return res;
+                        },
+                        TreeMap::new));
+        printMessage(countryToLocale.toString());
     }
 
     private static Stream<String> getStream(String[] words) {
