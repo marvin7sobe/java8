@@ -3,6 +3,7 @@ package main.java.com.java8;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public class Main {
@@ -12,7 +13,9 @@ public class Main {
         testSortingsByLabmda(words);
         testDefaultMethods();
         testStreamsFiltering(words);
+        //todo add example to work with flatMap
         testStreamsTransformations(words);
+        testWorkWithOptional(words);
     }
 
     private static void testSortingsByLabmda(String[] words) {
@@ -54,6 +57,10 @@ public class Main {
         printStreamContent(wordsStream);
     }
 
+    private static boolean containsString(String a, CharSequence c) {
+        return a.contains(c);
+    }
+
     private static void testStreamsTransformations(String[] words) {
         Stream<String> upperCased = getStream(words).map(String::toUpperCase);
         printMessage("\nUppercased by .map() v1");
@@ -76,15 +83,33 @@ public class Main {
         printMessage(Arrays.toString(longWords.toArray()));
     }
 
+    private static void testWorkWithOptional(String[] words) {
+        Optional<String> res = getStream(words).filter(w -> w.length() > 10).max((first, second) -> Integer.compare(first.length(), second.length()));
+        res.ifPresent(w -> printMessage("\nMaximum using max and ifPresent is(will not be printed if no value): " + w));
+        String max = res.orElse("empty");
+        printMessage("\nMaximum using max and orElse is: " + max);
+
+        max = res.orElseGet(() -> getMaximum());
+        printMessage("\nMaximum using max and orElseGet is: " + max);
+
+        res = getStream(words).filter(w -> w.startsWith("a")).findFirst();
+        res.ifPresent(w -> printMessage("\nFirst match than starts with \"a\" is: " + w));
+        Optional<String> newRes = Optional.ofNullable(res.orElse(null));
+        printMessage("New Optional res is:" + newRes.get());
+
+        boolean anyMatch = getStream(words).parallel().anyMatch(w -> w.startsWith("x"));
+        printMessage("\nIs there any words that starts with \"x\": " + anyMatch);
+    }
+
+    private static String getMaximum() {
+        return "123";
+    }
+
     private static Stream<String> getStream(String[] words) {
-        return Arrays.asList(words).stream();
+        return Arrays.stream(words);
     }
 
     private static void printMessage(String m) {
         System.out.println(m);
-    }
-
-    private static boolean containsString(String a, CharSequence c) {
-        return a.contains(c);
     }
 }
