@@ -1,25 +1,25 @@
 package main.java.com.java8;
 
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) {
-        String[] words = { "xyzwq", "aaa", "ab", "aabc34rer" };
+        String[] words = {"xyzwq", "aaa", "ab", "aabc34rer", "123", "defvbn"};
 
-        testSortingsByLabmda(words);
+        testSortingByLabmda(words);
         testDefaultMethods();
         testStreamsFiltering(words);
         //todo add example to work with flatMap
         testStreamsTransformations(words);
         testWorkWithOptional(words);
         testReduce();
+        testCollectingDataFromStream(words);
     }
 
-    private static void testSortingsByLabmda(String[] words) {
+    private static void testSortingByLabmda(String[] words) {
         printMessage("\nOriginal array: " + Arrays.toString(words));
 
         String[] wordsCopy = new String[words.length];
@@ -114,6 +114,35 @@ public class Main {
         numbers = Stream.empty();
         Integer sum = numbers.reduce(0, (x, y) -> x + y);
         printMessage("\nSum using reduce with identity is: " + sum);
+    }
+
+    private static void testCollectingDataFromStream(String[] words) {
+        Set<String> result = getStream(words).filter(w -> w.contains("x")).collect(HashSet::new, HashSet::add, HashSet::addAll);
+        printMessage("\nRaw collecting items from stream to HashSet: \n" + result.toString());
+
+        List<String> resultList = getStream(words).filter(w -> w.contains("a")).collect(Collectors.toList());
+        printMessage("\nCollecting items from stream to default List using Collectors: \n" + resultList.toString());
+
+        Set<String> resultSet = getStream(words).filter(w -> w.contains("b")).collect(Collectors.toSet());
+        printMessage("\nCollecting items from stream to default Set using Collectors: \n" + resultSet.toString());
+
+        TreeSet<String> resultTreeSet = getStream(words).collect(Collectors.toCollection(TreeSet::new));
+        printMessage("\nCollecting items from stream to TreeSet using Collectors: \n" + resultTreeSet.toString());
+
+        String joined = getStream(words).filter(w -> w.contains("b")).collect(Collectors.joining());
+        printMessage("\nCollecting items from stream to String(joined): \n" + joined);
+
+        String joinedWithDelimiter = getStream(words).filter(w -> w.contains("b")).collect(Collectors.joining(", "));
+        printMessage("\nCollecting items from stream to String(joined) with delimiter: \n" + joinedWithDelimiter);
+
+        String joined2 = getStream(words).map(Object::toString).collect(Collectors.joining("; "));
+        printMessage("\nCollecting items from stream (that can be not just strings) to String(joined) with delimiter: \n" + joined2);
+
+        printMessage("\nExecuting function on each element from stream(executed in parallel)");
+        getStream(words).sorted(Comparator.comparing(String::length)).forEach(w -> System.out.print(" " + w + " "));
+
+        printMessage("\n\nExecuting function on each element from stream (executed not in parallel)");
+        getStream(words).forEachOrdered(w -> System.out.print(" " + w + " "));
     }
 
     private static Stream<String> getStream(String[] words) {
