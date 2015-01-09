@@ -10,9 +10,11 @@ public class Main {
 
         String[] words = {"xyzwq", "aaa", "ab", "aabc34rer"};
         main.doSortByLabmda(words);
+
+        main.testDefaultMethods();
     }
 
-    public void doSortByLabmda(String[] words) {
+    private void doSortByLabmda(String[] words) {
         System.out.println("Original array: " + Arrays.toString(words));
 
         String[] wordsCopy = new String[words.length];
@@ -30,5 +32,14 @@ public class Main {
 
         Arrays.sort(wordsCopy, Comparator.comparing(String::length));
         System.out.println("Sorted array by word length v3: " + Arrays.toString(wordsCopy));
+    }
+
+    private void testDefaultMethods() {
+        Student s1 = new Student(23);
+        System.out.println("\nExecuting default method from Person:");
+        s1.printName();
+
+        System.out.println("\nExecuting static method from Person");
+        System.out.println(Person.getNamePrefix());
     }
 }
