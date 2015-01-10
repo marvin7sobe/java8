@@ -5,8 +5,7 @@ import com.sun.deploy.util.StringUtils;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.stream.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -20,6 +19,7 @@ public class Main {
         testWorkWithOptional(words);
         testReduce();
         testCollectingDataFromStream(words);
+        testWorkWithPrimitiveStreams(words);
     }
 
     private static void testSortingByLabmda(String[] words) {
@@ -220,6 +220,36 @@ public class Main {
 //                groupingBy(City::getState, mapping(City::getName, joining(", "))));
 
         printMessage(countryToLocale2.toString());
+    }
+
+    private static void testWorkWithPrimitiveStreams(String[] words) {
+        printMessage("\nWork with primitive streams:");
+        IntStream intStream = IntStream.of(1, 2, 3, 4);
+        printMessage("\nOriginal int stream values:");
+        intStream.forEach(i -> System.out.print(" " + i + " "));
+
+        printMessage("\nBoxing from primitive to Objects");
+        Stream<Integer> boxedInts = IntStream.of(1, 2, 3, 4).boxed();
+        boxedInts.forEach(i -> System.out.print(" " + i + " "));
+        printMessage("\nUnboxing from Objects to primitive");
+        intStream = Stream.of(1, 2, 4).mapToInt(Integer::intValue);
+        intStream.forEach(i -> System.out.print(" " + i + " "));
+
+        IntStream zeroToNine = IntStream.range(0, 10);
+        IntStream zeroToTen = IntStream.rangeClosed(0, 10);
+
+        printMessage("\nPrimitive long stream");
+        LongStream longStream = LongStream.of(1l, 2l, 3l);
+        longStream.forEach(l -> System.out.print(" " + l + " "));
+        LongStream zeroToFive = LongStream.range(0, 6l);
+
+        printMessage("\nPrimitive double stream");
+        DoubleStream doubleStream = DoubleStream.of(2.2, 3.3, 4.4);
+        doubleStream.forEach(l -> System.out.print(" " + l + " "));
+
+        printMessage("\nGetting words length from words stream to intStream");
+        IntStream wordsLength = getStream(words).mapToInt(String::length);
+        wordsLength.forEach(i -> System.out.print(" " + i + " "));
     }
 
     private static Stream<String> getStream(String[] words) {
