@@ -1,8 +1,6 @@
 package main.java.com.java8;
 
 
-import com.sun.deploy.util.StringUtils;
-
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.*;
@@ -20,6 +18,7 @@ public class Main {
         testReduce();
         testCollectingDataFromStream(words);
         testWorkWithPrimitiveStreams(words);
+        testParallelStream(words);
     }
 
     private static void testSortingByLabmda(String[] words) {
@@ -81,6 +80,13 @@ public class Main {
         Stream<Character> distinctFirstCharacter = getStream(words).map(w -> w.charAt(0)).distinct();
         printMessage("\nDistinct first charracter from word by .map()");
         printStreamContent(distinctFirstCharacter);
+
+        printMessage("\nNew item was added to list but stream is not broken and will display this word:");
+        List<String> wordsList = new ArrayList<>();
+        Collections.addAll(wordsList, words);
+        Stream<String> withNewWord = wordsList.stream();
+        wordsList.add("new_item_was_added_to_list");
+        printStreamContent(withNewWord);
     }
 
     private static void printStreamContent(Stream longWords) {
@@ -250,6 +256,18 @@ public class Main {
         printMessage("\nGetting words length from words stream to intStream");
         IntStream wordsLength = getStream(words).mapToInt(String::length);
         wordsLength.forEach(i -> System.out.print(" " + i + " "));
+    }
+
+    private static void testParallelStream(String[] words) {
+        printMessage("\n\nDisplay words in few threads using Parallel stream:");
+        Stream stream = getStream(words).parallel();
+        printStreamContent(stream);
+
+        printMessage("\nGrouping data to ConcurentMap:");
+        Stream<Locale> locales = Stream.of(Locale.getAvailableLocales());
+        Map<String, List<Locale>> countryToLocale = locales.filter(l -> l.getCountry().length() > 0)
+                .collect(Collectors.groupingByConcurrent(l -> l.getDisplayCountry()));
+        printMessage(countryToLocale.toString());
     }
 
     private static Stream<String> getStream(String[] words) {
