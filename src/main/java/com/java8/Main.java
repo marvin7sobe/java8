@@ -5,6 +5,8 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.*;
 
+import static main.java.com.java8.Utils.printMessage;
+
 public class Main {
     public static void main(String[] args) {
         String[] words = {"xyzwq", "aaa", "ab", "aabc34rer", "123", "defvbn"};
@@ -19,6 +21,7 @@ public class Main {
         testCollectingDataFromStream(words);
         testWorkWithPrimitiveStreams(words);
         testParallelStream(words);
+        testMayLambdas();
     }
 
     private static void testSortingByLabmda(String[] words) {
@@ -270,11 +273,12 @@ public class Main {
         printMessage(countryToLocale.toString());
     }
 
-    private static Stream<String> getStream(String[] words) {
-        return Arrays.stream(words);
+    public static void testMayLambdas() {
+        MyLambdas myLambdas = new MyLambdas();
+        myLambdas.executeTests();
     }
 
-    private static void printMessage(String m) {
-        System.out.println(m);
+    private static Stream<String> getStream(String[] words) {
+        return Arrays.stream(words);
     }
 }
