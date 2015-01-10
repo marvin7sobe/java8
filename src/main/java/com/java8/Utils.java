@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class Utils {
-    static void printMessage(String m) {
+    public static void printMessage(String m) {
         System.out.println(m);
     }
 

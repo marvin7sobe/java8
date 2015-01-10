@@ -60,6 +60,12 @@ public class MyLambdas {
 
         Image brighterByFactor = transform(image, brighter(1.8f));
         Utils.saveImage(brighterByFactor, "jpg", "eiffel-tower-brighter-by-factor.jpg");
+
+        Image res = LattenImage.from(image)
+                .transform(brighter(1.8f))
+                .transform(Color::grayscale)
+                .toImage();
+        Utils.saveImage(res, "jpg", "eiffel-tower-list-operators-transformation.jpg");
     }
 
     private FileInputStream getPreparedImageFis() {
