@@ -147,6 +147,10 @@ public class Main {
         printMessage("\n\nExecuting function on each element from stream (executed not in parallel)");
         getStream(words).forEachOrdered(w -> System.out.print(" " + w + " "));
 
+        testCollectingDataFromStreamToMap();
+    }
+
+    private static void testCollectingDataFromStreamToMap() {
         List<Student> students = Arrays.asList(new Student(1, "John"), new Student(2, "Bob"), new Student(3, "Arni"));
         printMessage("\n\nCollected students(id per name) to map:");
         Map<Long, String> studentsIdToName = students.stream()
@@ -188,6 +192,34 @@ public class Main {
                         },
                         TreeMap::new));
         printMessage(countryToLocale.toString());
+
+        printMessage("\nCollected locales(country per set of Locales) to Map using groupingBy:");
+        locales = Stream.of(Locale.getAvailableLocales());
+        Map<String, List<Locale>> countryToLocale2 = locales.filter(l -> l.getCountry().length() > 0)
+                .collect(Collectors.groupingBy(l -> l.getDisplayCountry()));
+//        Map<String, Set<Locale>> countryToLocale2 = locales.filter(l->l.getCountry().length()>0)
+//                .collect(Collectors.groupingBy(l->l.getDisplayCountry(), Collectors.toSet()));
+
+//        Map<String, Long> countryToLocaleCounts = locales.collect(
+//                groupingBy(Locale::getCountry, counting()));
+
+//        Map<String, Integer> stateToCityPopulation = cities.collect(
+//                groupingBy(City::getState, summingInt(City::getPopulation)));
+
+//        max city per state
+//        Map<String, City> stateToLargestCity = cities.collect(
+//                groupingBy(City::getState, maxBy(Comparator.comparing(City::getPopulation))));
+
+//        Map<String, Set<String>> countryToLanguages = locales.collect(
+//                groupingBy(l -> l.getDisplayCountry(), mapping(l -> l.getDisplayLanguage(), toSet())));
+
+//        Map<String, IntSummaryStatistics> stateToCityPopulationSummary = cities.collect(
+//                groupingBy(City::getState, summarizingInt(City::getPopulation)));
+
+//        Map<String, String> stateToCityNames = cities.collect(
+//                groupingBy(City::getState, mapping(City::getName, joining(", "))));
+
+        printMessage(countryToLocale2.toString());
     }
 
     private static Stream<String> getStream(String[] words) {
