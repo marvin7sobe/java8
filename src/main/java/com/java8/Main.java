@@ -1,6 +1,10 @@
 package main.java.com.java8;
 
 
+import javax.script.Bindings;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.*;
@@ -8,7 +12,7 @@ import java.util.stream.*;
 import static main.java.com.java8.Utils.printMessage;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ScriptException {
         String[] words = {"xyzwq", "aaa", "ab", "aabc34rer", "123", "defvbn"};
 
         testSortingByLabmda(words);
@@ -22,6 +26,7 @@ public class Main {
         testWorkWithPrimitiveStreams(words);
         testParallelStream(words);
         testMayLambdas();
+        testNashornScriptEngine();
     }
 
     private static void testSortingByLabmda(String[] words) {
@@ -276,6 +281,34 @@ public class Main {
     public static void testMayLambdas() {
         MyLambdas myLambdas = new MyLambdas();
         myLambdas.executeTests();
+    }
+
+    private static void testNashornScriptEngine() throws ScriptException {
+        ScriptEngineManager manager = new ScriptEngineManager();
+        ScriptEngine engine = manager.getEngineByName("nashorn");
+        Object length = engine.eval("'Hello World'.length");
+        System.out.println("\nNashorn JS: Length of 'Hello World' evaluated by engine is : " + length);
+
+        Bindings scope = engine.createBindings();
+        scope.put("stage", 23);
+        Object stage = engine.eval("stage", scope);
+        System.out.println("Nashorn JS: simple stage variable: " + stage);
+
+        scope.put("student1", new Student(11, "Don"));
+        Object firstName = engine.eval("student1.name", scope);
+        System.out.println("Nashorn JS: firstName from Student object: " + firstName);
+
+        engine.eval("var JDate = java.util.Date");
+        engine.eval("var d1 = new JDate()");
+        Object jDate = engine.eval("d1");
+        System.out.println("Nashorn JS: using java.util.Date class to create new date: " + jDate);
+
+        engine.eval("var StringArray = Java.type('java.lang.String[]')");
+        engine.eval("var strings = new StringArray(10)");
+        engine.eval("strings[2]='z34'");
+        engine.eval("var item = strings[2]");
+        Object stringItem = engine.eval("item");
+        System.out.println("Nashorn JS: item from strings array: " + stringItem);
     }
 
     private static Stream<String> getStream(String[] words) {
