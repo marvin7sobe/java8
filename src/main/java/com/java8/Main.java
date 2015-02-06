@@ -1,6 +1,9 @@
 package main.java.com.java8;
 
 
+import main.java.com.java8.domain.Person;
+import main.java.com.java8.domain.Student;
+
 import javax.script.Bindings;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;

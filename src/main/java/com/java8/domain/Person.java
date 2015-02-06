@@ -1,4 +1,4 @@
-package main.java.com.java8;
+package main.java.com.java8.domain;
 
 public interface Person {
 

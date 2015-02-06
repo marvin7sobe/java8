@@ -1,4 +1,6 @@
-package main.java.com.java8;
+package main.java.com.java8.domain;
+
+import main.java.com.java8.domain.Person;
 
 public class Student implements Person {
     private long id;
