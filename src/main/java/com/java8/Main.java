@@ -1,6 +1,8 @@
 package main.java.com.java8;
 
 
+import main.java.com.java8.domain.Album;
+import main.java.com.java8.domain.Artist;
 import main.java.com.java8.domain.Person;
 import main.java.com.java8.domain.Student;
 
@@ -22,6 +24,7 @@ public class Main {
         testDefaultMethods();
         testStreamsFiltering(words);
         //todo add example to work with flatMap
+        testNewMapFeatures();
         testStreamsTransformations(words);
         testWorkWithOptional(words);
         testReduce();
@@ -73,6 +76,32 @@ public class Main {
 
     private static boolean containsString(String a, CharSequence c) {
         return a.contains(c);
+    }
+
+    private static void testNewMapFeatures() {
+        printMessage("\nNew forEach method in map");
+        Map<Artist, List<Album>> map = new HashMap<>();
+        map.put(new Artist("John"), Arrays.asList(new Album("Title 1"), new Album("Title 2")));
+        map.put(new Artist("Dino"), Arrays.asList(new Album("Title 2"), new Album("Title 3")));
+        map.put(new Artist("Sam"), Arrays.asList(new Album("Title 4"), new Album("Title 5"), new Album("Title 6")));
+        Map<Artist, Integer> countsOfAlbums = new HashMap<>();
+        map.forEach((artist, albums) -> countsOfAlbums.put(artist, albums.size()));
+
+        printMessage("\nCache implementation");
+        Map<String, Artist> cacheMap = new HashMap<>();
+        map.forEach((artist, albums) -> cacheMap.put(artist.getName(), artist));
+        Artist fromCache = cacheMap.computeIfAbsent("John", s -> new Artist(s));
+        printMessage("Artist from cache: " + fromCache.getName());
+
+        Artist fromDBAndPutToCache = cacheMap.computeIfAbsent("Arny", getArtistFromDatabase());
+        printMessage("Artist from DB: " + fromDBAndPutToCache.getName());
+    }
+
+    private static Function<? super String, ? extends Artist> getArtistFromDatabase() {
+        return s -> {
+            //dbManager.getByName(s)
+            return new Artist(s);
+        };
     }
 
     private static void testStreamsTransformations(String[] words) {
