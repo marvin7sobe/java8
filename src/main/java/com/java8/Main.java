@@ -117,6 +117,13 @@ public class Main {
         printMessage("\nFirst charracter from word by .map()");
         printStreamContent(firstCharacter);
 
+        Stream<String> uppercasedFirstCharacter = getStream(words)
+                .map(w -> {
+                    String first = Character.toString(w.charAt(0)).toLowerCase();
+                    return first + w.substring(1);});
+        printMessage("\nUppercasing first character of word");
+        printStreamContent(uppercasedFirstCharacter);
+
         Stream<Character> distinctFirstCharacter = getStream(words).map(w -> w.charAt(0)).distinct();
         printMessage("\nDistinct first charracter from word by .map()");
         printStreamContent(distinctFirstCharacter);
