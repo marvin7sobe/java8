@@ -128,6 +128,10 @@ public class Main {
         printMessage("\nDistinct first charracter from word by .map()");
         printStreamContent(distinctFirstCharacter);
 
+        printMessage("\nUsing 'peek' to print stream content and don't terminate stream: ");
+        distinctFirstCharacter = getStream(words).map(w -> w.charAt(0)).peek(s -> System.out.println(s)).distinct();
+        printStreamContent(distinctFirstCharacter);
+
         printMessage("\nNew item was added to list but stream is not broken and will display this word:");
         List<String> wordsList = new ArrayList<>();
         Collections.addAll(wordsList, words);
