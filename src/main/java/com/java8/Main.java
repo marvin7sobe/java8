@@ -33,6 +33,7 @@ public class Main {
         testParallelStream(words);
         testMayLambdas();
         testNashornScriptEngine();
+        testCompletableFutures();
     }
 
     private static void testSortingByLabmda(String[] words) {
@@ -356,5 +357,9 @@ public class Main {
 
     private static Stream<String> getStream(String[] words) {
         return Arrays.stream(words);
+    }
+
+    private static void testCompletableFutures(){
+        new CompletableFuturesTest().executeTests();
     }
 }
